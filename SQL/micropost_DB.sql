@@ -1,7 +1,0 @@
-CREATE DATABASE micropost_DB;
-CREATE TABLE micropost_DB.posts_data (
-    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY ,
-    posts VARCHAR (255),
-    users_id INT,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
