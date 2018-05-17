@@ -1,6 +1,24 @@
 <?php
 session_start();
+    $username = 'root';
+    $password = '';
+    $database = new PDO('mysql:host=localhost;dbname=clone_DB;charset=UTF8;', $username, $password);
+    if ($database == false) {
+        die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+    }
+    
+    $sql = 'SELECT * FROM users_data WHERE id=:T_ID';
+    $statement = $database->prepare($sql);
+    $statement->bindParam(':T_ID', $_SESSION['user_id']);
+    $statement->execute();
+    $records = $statement->fetchAll();
+    foreach ($records as $record) {
+        $id = $record['id'];
+        $u_name =$record['user_name'];
+    }
+    $statement = null;
 
+    $database = null;
 ?>
 <!DOCTYPE html>
 <html>
@@ -33,7 +51,7 @@ session_start();
                 <ul class="nav navbar-nav navbar-right">
                                             <li><a href="alluserpage.php">Users</a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">asdf <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php print htmlspecialchars($u_name, ENT_QUOTES, 'UTF-8'); ?><span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="userpage.php">My profile</a></li>
                                 <li role="separator" class="divider"></li>
