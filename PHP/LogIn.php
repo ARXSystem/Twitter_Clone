@@ -1,3 +1,40 @@
+<?php
+session_start();
+    // MySQLサーバ接続に必要な値を変数に代入
+    $username = 'root';
+    $password = '';
+    $database = new PDO('mysql:host=localhost;dbname=clone_DB;charset=UTF8;', $username, $password);
+
+    if ($database == false) {
+        die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+    }
+
+    if ($_POST['btn_login']){ 
+        
+            $sql = 'SELECT * FROM users_data WHERE user_id=":email"';
+        
+            $statement = $database->prepare($sql);
+            $statement->bindParam(':email', $_POST['email']);
+            $statement->execute();
+   
+            $records = $statement->fetchAll();
+
+            $statement = null;
+            $database = null;
+            
+            if($records){
+                if($record['user_pw']==$_POST['password']){
+                    $_SESSION['user_id'] = $record['id'];
+                    
+                    Header("Location:micropost.php");
+                }else {
+                    echo "<script>alert(\"Wrong password\");</script>";
+                }
+            }else{
+                echo "<script>alert(\"Can't find the user\");</script>";
+            }
+    }
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,7 +64,7 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                                            <li><a href="SignUp.php">Signup</a></li>
+                                            <li><a href="SignUp.php">Sign up</a></li>
                         <li><a href="LogIn.php">Login</a></li>
                                     </ul>
             </div>
@@ -43,7 +80,7 @@
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             
-            <form method="POST" action="http://laravel-microposts.herokuapp.com/login" accept-charset="UTF-8"><input name="_token" type="hidden" value="hW7ZGkuYzvemGTXnZXYg5ZLQbzCqBHL6QWxn2jha">
+            <form method="POST" action="LogIn.php" accept-charset="UTF-8"><input name="_token" type="hidden" value="hW7ZGkuYzvemGTXnZXYg5ZLQbzCqBHL6QWxn2jha">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input class="form-control" name="email" type="email" id="email">
@@ -54,7 +91,7 @@
                     <input class="form-control" name="password" type="password" value="" id="password">
                 </div>
                 
-                <input class="btn btn-primary btn-block" type="submit" value="Log in">
+                <input class="btn btn-primary btn-block" type="submit" value="Log in" name="btn-login">
             </form>
             
             <p>New user? <a href="SignUp.php">Sign up now!</a></p>

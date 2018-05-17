@@ -1,3 +1,47 @@
+<?php
+    // MySQLサーバ接続に必要な値を変数に代入
+    $username = 'root';
+    $password = '';
+
+    $database = new PDO('mysql:host=localhost;dbname=clone_DB;charset=UTF8;', $username, $password);
+
+    if ($database == false) {
+        die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+    }
+
+    if ($_POST['btn_signUp']){ 
+        if($_POST['password']==$_POST['password_confirmation']){
+        
+            $sql = 'INSERT INTO users_data (user_name,user_id,user_pw) VALUES(:name,:email,:password)';
+        
+            $statement = $database->prepare($sql);
+        
+            $statement->bindParam(':name', $_POST['name']);
+            $statement->bindParam(':email', $_POST['email']);
+            $statement->bindParam(':password', $_POST['password']);
+ 
+        
+            $statement->execute();
+      
+            $statement = null;
+            
+            //$sql = 'SELECT * FROM message_data ORDER BY created_at';
+  
+            //$statement = $database->query($sql);
+   
+            //$records = $statement->fetchAll();
+
+            //$statement = null;
+   
+            $database = null;
+            
+            Header("Location:LogIn.php");
+
+        }else{
+        echo "<script>alert(\"Not matched the password\");</script>";
+        }
+    }
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,7 +71,7 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                                            <li><a href="SignUp.php">Signup</a></li>
+                                            <li><a href="SignUp.php">Sign up</a></li>
                         <li><a href="LogIn.php">Login</a></li>
                                     </ul>
             </div>
@@ -39,24 +83,23 @@
                 <div class="text-center">
         <h1>Sign up</h1>
     </div>
-    
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             
-            <form method="POST" action="http://laravel-microposts.herokuapp.com/signup" accept-charset="UTF-8"><input name="_token" type="hidden" value="hW7ZGkuYzvemGTXnZXYg5ZLQbzCqBHL6QWxn2jha">
+            <form method="POST" action="SignUp.php" accept-charset="UTF-8">
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input class="form-control" name="name" type="text" id="name">
+                    <input class="form-control" name="name" type="text" id="name" name="name">
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input class="form-control" name="email" type="email" id="email">
+                    <input class="form-control" name="email" type="email" id="email" name="email">
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input class="form-control" name="password" type="password" value="" id="password">
+                    <input class="form-control" name="password" type="password" value="" id="password" name="password">
                 </div>
                 
                 <div class="form-group">
@@ -64,7 +107,7 @@
                     <input class="form-control" name="password_confirmation" type="password" value="" id="password_confirmation">
                 </div>
                 
-                <input class="btn btn-primary btn-block" type="submit" value="Sign up">
+                <input class="btn btn-primary btn-block" type="submit" value="Sign up" name="btn_signUp">
             </form>
         </div>
     </div>

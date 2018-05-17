@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (isset($_SESSION['user_id'])==TRUE){
+    Header("Location:micropost.php");
+}
+
+?>
 <!DOCTYPE html>
 <html>
     <head>
