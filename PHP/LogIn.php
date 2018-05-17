@@ -9,29 +9,42 @@ session_start();
         die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
     }
 
-    if ($_POST['btn_login']){ 
-        
-            $sql = 'SELECT * FROM users_data WHERE user_id=":email"';
-        
+    if ($_POST['btn-login']){ 
+            
+            $sql = 'SELECT EXISTS(SELECT * FROM users_data WHERE user_id=:email)';
+            //$sql = 'SELECT * FROM users_data WHERE user_id=:email';
+            
             $statement = $database->prepare($sql);
             $statement->bindParam(':email', $_POST['email']);
             $statement->execute();
-   
             $records = $statement->fetchAll();
-
-            $statement = null;
-            $database = null;
-            
-            if($records){
-                if($record['user_pw']==$_POST['password']){
-                    $_SESSION['user_id'] = $record['id'];
-                    
+            $check = $records[0][0];
+            if($check==1){
+                $statement = null;
+                $sql = 'SELECT * FROM users_data WHERE user_id=:email';
+                $statement = $database->prepare($sql);
+                $statement->bindParam(':email', $_POST['email']);
+                $statement->execute();
+                $records = $statement->fetchAll();
+                
+                foreach ($records as $record) {
+                    $id = $record['id'];
+                    $u_pw = $record['user_pw'];
+                }
+                if($u_pw==$_POST['password']){
+                    $_SESSION['user_id'] = $id;
+                    $statement = null;
+                    $database = null;
                     Header("Location:micropost.php");
                 }else {
+                    $statement = null;
+                    $database = null;
                     echo "<script>alert(\"Wrong password\");</script>";
                 }
             }else{
-                echo "<script>alert(\"Can't find the user\");</script>";
+                $statement = null;
+                $database = null;
+                echo "<script>alert(\"Can't find the User\");</script>";
             }
     }
 ?>

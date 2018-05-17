@@ -1,10 +1,6 @@
 <?php
 session_start();
 
-// logput
-if($_POST['logout']){
-    unset($_SESSION['user_id']);
-}
 ?>
 <!DOCTYPE html>
 <html>

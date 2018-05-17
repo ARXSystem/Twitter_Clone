@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user_id'])==TRUE){
-    Header("Location:micropost.php");
+if (isset($_SESSION['user_id'])){
+    Header("Location:PHP/micropost.php");
 }
 
 ?>
@@ -37,7 +37,7 @@ if (isset($_SESSION['user_id'])==TRUE){
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                                            <li><a href="./PHP/SignUp.php">Signup</a></li>
+                                            <li><a href="./PHP/SignUp.php">Sign up</a></li>
                         <li><a href="./PHP/LogIn.php">Login</a></li>
                                     </ul>
             </div>
