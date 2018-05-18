@@ -15,9 +15,15 @@ session_start();
     foreach ($records as $record) {
         $id = $record['id'];
         $u_name =$record['user_name'];
+        $image_url= $record['information'];
     }
+    $sql = 'SELECT * FROM posts_data WHERE users_id=:T_ID ORDER BY created_at DESC';
+    $statement = $database->prepare($sql);
+    $statement->bindParam(':T_ID', $_SESSION['user_id']);
+    $statement->execute();
+    $records = $statement->fetchAll();
+    
     $statement = null;
-
     $database = null;
 ?>
 <!DOCTYPE html>
@@ -49,13 +55,13 @@ session_start();
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                                            <li><a href="alluserpage.php">Users</a></li>
+                                            <li><a href="alluserpage.php">Time Line</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php print htmlspecialchars($u_name, ENT_QUOTES, 'UTF-8'); ?><span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="userpage.php">My profile</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="Logout.php">Logout</a></li>
+                                <li><a href="./Logout.php">Logout</a></li>
                             </ul>
                         </li>
                                     </ul>
@@ -67,137 +73,32 @@ session_start();
                         
                 <ul class="media-list">
     <li class="media">
+         <?php if($records){
+                foreach ($records as $record) {
+                    $posts = $record['posts'];
+                    $post_time =$record['created_at'];
+                    //$post_id =$record['id'];
+                ?>
         <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/e79e636c493e13e803ace5afcddb87a5?s=50&amp;r=g&amp;d=identicon" alt="">
+            <?php if($image_url==NULL){?><img class="media-object img-rounded" src="../uploads/basic.png" width="60px" height="60px" alt=""><?php }?>
+            <img class="media-object img-rounded" src="<?php print ($image_url); ?>" width="60px" height="60px" alt="">
         </div>
         <div class="media-body">
             <div>
-                t
+                <a href="userpage.php"><?php print htmlspecialchars($u_name, ENT_QUOTES, 'UTF-8'); ?></a> <span class="text-muted">posted at <?php print htmlspecialchars($post_time, ENT_QUOTES, 'UTF-8'); ?></span>
             </div>
             <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/180">View profile</a></p>
-            </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/031ebe7dc5eabf61c5099ed79d26a549?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                sumiem
+                <?php print htmlspecialchars($posts, ENT_QUOTES, 'UTF-8'); ?>
             </div>
             <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/41">View profile</a></p>
+                <p><a href="/">View profile</a></p>
             </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/f2c97b1f2d2898cd2d6466ce95d4ba33?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                test2
-            </div>
-            <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/2">View profile</a></p>
-            </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/07a23e76b53628a62f3221d37693094e?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                太郎
-            </div>
-            <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/182">View profile</a></p>
-            </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/c5536218324153de5bf92e08c38bc5e5?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                k-s
-            </div>
-            <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/3">View profile</a></p>
-            </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/933291444e456bfb511a66a2fa9c6929?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                j5ik2o
-            </div>
-            <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/4">View profile</a></p>
-            </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/49860bb9751c4f7ec93132ae3d1ec7a0?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                abc
-            </div>
-            <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/5">View profile</a></p>
-            </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/0886f9e4444cd8240183498d8a7a0c96?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                test
-            </div>
-            <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/6">View profile</a></p>
-            </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/4cf8c72286e5bf9289b2a6eebd28fb68?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                あああああ
-            </div>
-            <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/7">View profile</a></p>
-            </div>
-        </div>
-    </li>
-    <li class="media">
-        <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/e830a2e71c74f8b92ec7db1320cf9780?s=50&amp;r=g&amp;d=identicon" alt="">
-        </div>
-        <div class="media-body">
-            <div>
-                n
-            </div>
-            <div>
-                <p><a href="http://laravel-microposts.herokuapp.com/users/8">View profile</a></p>
-            </div>
-        </div>
+        </div><br>
+        <?php                }
+            }?>
     </li>
 </ul>
-<ul class="pagination"><li class="disabled"><span>&laquo;</span></li> <li class="active"><span>1</span></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=2">2</a></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=3">3</a></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=4">4</a></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=5">5</a></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=6">6</a></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=7">7</a></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=8">8</a></li><li class="disabled"><span>...</span></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=40">40</a></li><li><a href="http://laravel-microposts.herokuapp.com/users?page=41">41</a></li> <li><a href="http://laravel-microposts.herokuapp.com/users?page=2" rel="next">&raquo;</a></li></ul>
+<ul class="pagination"><li class="disabled"><span>&laquo;</span></li> <li class="active"><span>1</span></li><li><a href="/">2</a></li><li><a href="/">3</a></li><li class="disabled"><span>...</span></li><li><a href="/">40</a></li><li><a href="/">41</a></li> <li><a href="/" rel="next">&raquo;</a></li></ul>
         </div>
     </body>
 </html>

@@ -15,16 +15,19 @@ session_start();
     foreach ($records as $record) {
         $id = $record['id'];
         $u_name =$record['user_name'];
+        $image_url= $record['information'];
     }
     $statement = null;
-        if ($_POST['submit_img']) {
+    
+    if ($_POST['submit_img']) {
         $file_name = $_FILES['add_img']['name'];
-        $image_path = './uploads/' . $file_name;
+        $image_path = '../uploads/' . $file_name;
         move_uploaded_file($_FILES['add_img']['tmp_name'], $image_path);
         
-        //$sql = 'INSERT INTO users_data (information) VALUES(:add_img)';
+        $sql = 'UPDATE users_data SET information=:add_img WHERE id=:T_ID';
         $statement = $database->prepare($sql);
         $statement->bindParam(':add_img', $image_path);
+        $statement->bindParam(':T_ID', $_SESSION['user_id']);
         $statement->execute();
         $statement = null;
     }
@@ -75,13 +78,13 @@ session_start();
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                                            <li><a href="alluserpage.php">Users</a></li>
+                                            <li><a href="alluserpage.php">Time Line</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php print htmlspecialchars($u_name, ENT_QUOTES, 'UTF-8'); ?><span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="userpage.php">My profile</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="logout.php">Logout</a></li>
+                                <li><a href="./Logout.php">Logout</a></li>
                             </ul>
                         </li>
                                     </ul>
@@ -98,8 +101,10 @@ session_start();
                     <h3 class="panel-title"><?php print htmlspecialchars($u_name, ENT_QUOTES, 'UTF-8'); ?></h3>
                 </div>
                 <div class="panel-body">
-                    <img class="media-object img-rounded img-responsive" src="https://secure.gravatar.com/avatar/2fb65c9a2d8e5f874c4f31d25d819665?s=500&amp;r=g&amp;d=identicon" alt=""><br>
-                    <form>
+                    <?php if($image_url==NULL){
+                    ?>    <img class="media-object img-rounded img-responsive" src="../uploads/basic.png" alt=""><?php }?>
+                    <img class="media-object img-rounded img-responsive" src="<?php print ($image_url); ?>" alt=""><br>
+                    <form action="userpage.php" method="POST" enctype="multipart/form-data">
                         <input type="file" name="add_img">
                         <input type="submit" name="submit_img" value="Uploads"/>
                     </form>
@@ -108,14 +113,15 @@ session_start();
         </aside>
         <div class="col-xs-8">
             <ul class="nav nav-tabs nav-justified">
-                <li role="presentation" class="active"><a href="micropost.php">Microposts <span class="badge">1</span></a></li>
+                <li role="presentation" class="active"><a href="micropost.php">Microposts <span class="badge"><?php print htmlspecialchars(count($records), ENT_QUOTES, 'UTF-8'); ?></span></a></li>
                 <li role="presentation" class=""><a href="http://laravel-microposts.herokuapp.com/users/435/followings">Followings <span class="badge">0</span></a></li>
                 <li role="presentation" class=""><a href="http://laravel-microposts.herokuapp.com/users/435/followers">Followers <span class="badge">0</span></a></li>
             </ul>
                             <ul class="media-list">
         <li class="media">
         <div class="media-left">
-            <img class="media-object img-rounded" src="https://secure.gravatar.com/avatar/2fb65c9a2d8e5f874c4f31d25d819665?s=50&amp;r=g&amp;d=identicon" alt="">
+            <?php if($image_url==NULL){?><img class="media-object img-rounded" src="../uploads/basic.png" width="120px" height="120px" alt=""><?php }?>
+            <img class="media-object img-rounded" src="<?php print ($image_url); ?>" width="120px" height="120px" alt="">
         </div>
         <div class="media-body">
             <?php if($records){

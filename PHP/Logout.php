@@ -1,6 +1,8 @@
 <?php
 session_start();
-// logput
+// logout
+
     unset($_SESSION['user_id']);
     Header("Location:../index.php");
+   
 ?>
