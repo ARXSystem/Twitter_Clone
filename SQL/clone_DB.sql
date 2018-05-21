@@ -13,3 +13,9 @@ CREATE TABLE clone_DB.posts_data (
     users_id INT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE clone_DB.follows_data (
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY ,
+    users_id INT,
+    follows_id INT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
