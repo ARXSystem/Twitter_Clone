@@ -17,9 +17,9 @@ session_start();
         $u_name =$record['user_name'];
         $image_url= $record['information'];
     }
-    $sql = 'SELECT * FROM posts_data WHERE users_id=:T_ID ORDER BY created_at DESC';
+    
+    $sql = 'SELECT * FROM posts_data ORDER BY created_at DESC';
     $statement = $database->prepare($sql);
-    $statement->bindParam(':T_ID', $_SESSION['user_id']);
     $statement->execute();
     $records = $statement->fetchAll();
     

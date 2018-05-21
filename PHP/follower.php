@@ -40,29 +40,8 @@ session_start();
     $records = $statement->fetchAll();
     $follower_counter = count($records);
     
-    foreach($records as $record){
-        $link_id=$record['users_id'];
-    }
-    $sql = 'SELECT * FROM users_data WHERE id=:T_ID';
-    $statement = $database->prepare($sql);
-    $statement->bindParam(':T_ID', $link_id);
-    $statement->execute();
-    $records = $statement->fetchAll();
-    
-    foreach ($records as $record) {
-        $f_id = $record['id'];
-        $f_u_name =$record['user_name'];
-        $f_image_url= $record['information'];
-    }
-    
-    $sql = 'SELECT * FROM posts_data WHERE users_id=:T2_ID';
-    $statement = $database->prepare($sql);
-    $statement->bindParam(':T2_ID', $link_id);
-    $statement->execute();
-    $records = $statement->fetchAll();
-    
     $statement = null;
-    $database = null;
+    
 ?>
 <!DOCTYPE html>
 <html>
@@ -131,11 +110,21 @@ session_start();
                             <ul class="media-list">
         <li class="media">
             <?php 
-            
-            if($records){
-                foreach ($records as $record) {
-                    $posts = $record['posts'];
-                    $post_time =$record['created_at'];
+            foreach($records as $record){
+                $link_id=$record['users_id'];
+                
+                $sql = 'SELECT * FROM users_data WHERE id=:A_ID';
+                $statement = $database->prepare($sql);
+                $statement->bindParam(':A_ID', $link_id);
+                $statement->execute();
+                $instances = $statement->fetchAll();
+                
+                foreach ($instances as $instance) {
+                    $f_id = $instance['id'];
+                    $f_u_name =$instance['user_name'];
+                    $f_image_url= $instance['information'];
+                }
+           
                 ?>
         <div class="media-left">
             <?php if($f_image_url==NULL){?><img class="media-object img-rounded" src="../uploads/basic.png" width="120px" height="120px" alt=""><?php }?>
@@ -144,17 +133,17 @@ session_start();
         <div class="media-body">
             
             <div>
-                <a href="userpage.php"><?php print htmlspecialchars($f_u_name, ENT_QUOTES, 'UTF-8'); ?></a> <span class="text-muted">posted at <?php print htmlspecialchars($post_time, ENT_QUOTES, 'UTF-8'); ?></span>
-     
+                <a href="/"><?php print htmlspecialchars($f_u_name, ENT_QUOTES, 'UTF-8'); ?></span>
             <div>
                 <p><?php print htmlspecialchars($posts, ENT_QUOTES, 'UTF-8'); ?><br></p>
-            </div>
-            
+            <div>
+                <p><a href="/">View profile</a></p>
+            </div> 
             </div>
         </div><br>
-        <?php                }
-            
-            }?>
+        </div>
+        <?php               }
+        $database=NULL?>
     </li>
 </ul>
 
