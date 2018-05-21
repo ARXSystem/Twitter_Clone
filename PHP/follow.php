@@ -141,7 +141,7 @@ session_start();
             </div> 
             </div>
         </div><br>
-        </div>
+        </div><br>
         <?php               }
         $database=NULL?>
     </li>

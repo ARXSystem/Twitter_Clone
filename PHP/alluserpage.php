@@ -13,18 +13,14 @@ session_start();
     $statement->execute();
     $records = $statement->fetchAll();
     foreach ($records as $record) {
-        $id = $record['id'];
         $u_name =$record['user_name'];
-        $image_url= $record['information'];
     }
     
     $sql = 'SELECT * FROM posts_data ORDER BY created_at DESC';
-    $statement = $database->prepare($sql);
-    $statement->execute();
-    $records = $statement->fetchAll();
-    
+            $statement = $database->prepare($sql);
+            $statement->execute();
+            $records = $statement->fetchAll();
     $statement = null;
-    $database = null;
 ?>
 <!DOCTYPE html>
 <html>
@@ -73,11 +69,23 @@ session_start();
                         
                 <ul class="media-list">
     <li class="media">
-         <?php if($records){
+        <?php
+            if($records){
                 foreach ($records as $record) {
                     $posts = $record['posts'];
                     $post_time =$record['created_at'];
-                    //$post_id =$record['id'];
+                    $post_id =$record['users_id'];
+                    
+                    $sql = 'SELECT * FROM users_data WHERE id=:A_ID';
+                    $statement = $database->prepare($sql);
+                    $statement->bindParam(':A_ID', $post_id);
+                    $statement->execute();
+                    $instances = $statement->fetchAll();
+                    foreach ($instances as $instance) {
+                        $image_url=$instance['information'];
+                        $name=$instance['user_name'];
+                    }
+                    
                 ?>
         <div class="media-left">
             <?php if($image_url==NULL){?><img class="media-object img-rounded" src="../uploads/basic.png" width="60px" height="60px" alt=""><?php }?>
@@ -85,7 +93,7 @@ session_start();
         </div>
         <div class="media-body">
             <div>
-                <a href="userpage.php"><?php print htmlspecialchars($u_name, ENT_QUOTES, 'UTF-8'); ?></a> <span class="text-muted">posted at <?php print htmlspecialchars($post_time, ENT_QUOTES, 'UTF-8'); ?></span>
+                <a href="userpage.php"><?php print htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?></a> <span class="text-muted">posted at <?php print htmlspecialchars($post_time, ENT_QUOTES, 'UTF-8'); ?></span>
             </div>
             <div>
                 <?php print htmlspecialchars($posts, ENT_QUOTES, 'UTF-8'); ?>
