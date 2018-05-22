@@ -66,10 +66,8 @@ session_start();
     </nav>
 </header>        
         <div class="container">
-                        
                 <ul class="media-list">
-    <li class="media">
-        <?php
+                    <?php
             if($records){
                 foreach ($records as $record) {
                     $posts = $record['posts'];
@@ -87,9 +85,12 @@ session_start();
                     }
                     
                 ?>
+    <li class="media">
+        
         <div class="media-left">
-            <?php if($image_url==NULL){?><img class="media-object img-rounded" src="../uploads/basic.png" width="60px" height="60px" alt=""><?php }?>
+            <?php if($image_url==NULL){?><img class="media-object img-rounded" src="../uploads/basic.png" width="60px" height="60px" alt=""><?php }else{?>
             <img class="media-object img-rounded" src="<?php print ($image_url); ?>" width="60px" height="60px" alt="">
+            <?php } ?>
         </div>
         <div class="media-body">
             <div>
@@ -99,12 +100,12 @@ session_start();
                 <?php print htmlspecialchars($posts, ENT_QUOTES, 'UTF-8'); ?>
             </div>
             <div>
-                <p><a href="/">View profile</a></p>
+                <p><a href="userpage.php?id=<?=$post_id?>">View profile</a></p>
             </div>
-        </div><br>
-        <?php                }
-            }?>
+        </div>
     </li>
+    <?php                }
+            }?>
 </ul>
 <ul class="pagination"><li class="disabled"><span>&laquo;</span></li> <li class="active"><span>1</span></li><li><a href="/">2</a></li><li><a href="/">3</a></li><li class="disabled"><span>...</span></li><li><a href="/">40</a></li><li><a href="/">41</a></li> <li><a href="/" rel="next">&raquo;</a></li></ul>
         </div>
