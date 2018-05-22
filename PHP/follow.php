@@ -17,29 +17,27 @@ session_start();
         $u_name =$record['user_name'];
         $image_url= $record['information'];
     }
-    $statement = null;
     
-    $sql = 'SELECT * FROM posts_data WHERE users_id=:T_ID';
-    $statement = $database->prepare($sql);
-    $statement->bindParam(':T_ID', $_SESSION['user_id']);
-    $statement->execute();
-    $records = $statement->fetchAll();
-    $micro_counter = count($records);
+        $get_id=$_GET[id];
     
-    $sql = 'SELECT * FROM follows_data WHERE follows_id=:T_ID';
-    $statement = $database->prepare($sql);
-    $statement->bindParam(':T_ID', $_SESSION['user_id']);
-    $statement->execute();
-    $records = $statement->fetchAll();
-    $follower_counter = count($records);
+    if($_POST['btn_follow']){
+        $sql = 'INSERT INTO follows_data(users_id,follows_id) VALUES(:u_id,:fol_id)';
+        $statement = $database->prepare($sql);
+        $statement->bindParam(':u_id', $_SESSION['user_id']);
+        $statement->bindParam(':fol_id', $get_id);
+        $statement->execute();
+        $statement = null;
+    }
     
-    $sql = 'SELECT * FROM follows_data WHERE users_id=:T_ID';
-    $statement = $database->prepare($sql);
-    $statement->bindParam(':T_ID', $_SESSION['user_id']);
-    $statement->execute();
-    $records = $statement->fetchAll();
-    $follow_counter = count($records);
-    
+    if($_POST['btn_unfollow']){
+        $sql = 'DELETE FROM follows_data WHERE (users_id=:user_id AND follows_id=:fol_id)';
+        $statement = $database->prepare($sql);
+        $statement->bindParam(':user_id', $_SESSION['user_id']);
+        $statement->bindParam(':fol_id', $get_id);
+        $statement->execute();
+        $statement = null;
+    }
+ 
     $statement = null;
     
 ?>
@@ -89,6 +87,27 @@ session_start();
 <?php
 $get_id=$_GET[id];
 if($get_id==NULL){
+    $sql = 'SELECT * FROM posts_data WHERE users_id=:T_ID';
+    $statement = $database->prepare($sql);
+    $statement->bindParam(':T_ID', $_SESSION['user_id']);
+    $statement->execute();
+    $records = $statement->fetchAll();
+    $micro_counter = count($records);
+    
+    $sql = 'SELECT * FROM follows_data WHERE follows_id=:T_ID';
+    $statement = $database->prepare($sql);
+    $statement->bindParam(':T_ID', $_SESSION['user_id']);
+    $statement->execute();
+    $records = $statement->fetchAll();
+    $follower_counter = count($records);
+    
+    $sql = 'SELECT * FROM follows_data WHERE users_id=:T_ID';
+    $statement = $database->prepare($sql);
+    $statement->bindParam(':T_ID', $_SESSION['user_id']);
+    $statement->execute();
+    $records = $statement->fetchAll();
+    $follow_counter = count($records);
+    
     ?>
     
     <div class="container">
@@ -146,6 +165,20 @@ if($get_id==NULL){
         </div>
     </div>
 <?php      }else{
+    $sql = 'SELECT * FROM follows_data WHERE follows_id=:T_ID';
+    $statement = $database->prepare($sql);
+    $statement->bindParam(':T_ID', $get_id);
+    $statement->execute();
+    $records = $statement->fetchAll();
+    $follower_counter = count($records);
+    
+    $sql = 'SELECT * FROM follows_data WHERE users_id=:T_ID';
+    $statement = $database->prepare($sql);
+    $statement->bindParam(':T_ID', $get_id);
+    $statement->execute();
+    $records = $statement->fetchAll();
+    $follow_counter = count($records);
+    
     $sql = 'SELECT * FROM posts_data WHERE users_id=:A_ID';
     $statement = $database->prepare($sql);
     $statement->bindParam(':A_ID', $get_id);
@@ -180,19 +213,34 @@ if($get_id==NULL){
                         <?php if($image_url==NULL){ ?>    
                             <img class="media-object img-rounded img-responsive" src="../uploads/basic.png" alt=""><?php }else{?>
                             <img class="media-object img-rounded img-responsive" src="<?php print ($image_url); ?>" alt="">
-                            <?php }?>
-                        <div>
-                            <form method="POST" action="/" accept-charset="UTF-8"><input name="_method" type="hidden" value="Follow">
-                                <input class="btn btn-primary btn-lg btn-block" type="submit" name="btn_follow" value="Follow">
-                                <input type="hidden" name="follow_post" value="<?php print($get_id);?>"/>
-                            </form>
-                        </div>
-                        <div>
-                            <form method="POST" action="/" accept-charset="UTF-8"><input name="_method" type="hidden" value="Unfollow">
-                                <input class="btn btn-danger btn-lg btn-block" type="submit" name="btn_unfollow" value="Unfollow">
-                                <input type="hidden" name="unfollow_post" value="<?php print($get_id);?>"/>
-                            </form>
-                        </div>
+                        <?php }?>
+                        <?php 
+                        $flag=NULL;
+                        $sql = 'SELECT * FROM follows_data WHERE users_id=:A_ID';
+                        $statement = $database->prepare($sql);
+                        $statement->bindParam(':A_ID', $_SESSION['user_id']);
+                        $statement->execute();
+                        $checks = $statement->fetchAll();
+                        foreach($checks as $check){
+                            $follow=$check['follows_id'];
+                            if($get_id==$follow){ ?>
+                                <div>
+                                    <form method="POST" action="follow.php?id=<?=$get_id?>" accept-charset="UTF-8"><input name="_method" type="hidden" value="Unfollow">
+                                        <input class="btn btn-danger btn-lg btn-block" type="submit" name="btn_unfollow" value="Unfollow">
+                                        <input type="hidden" name="unfollow_post" value="<?php print($get_id);?>"/>
+                                    </form>
+                                </div>
+                            <?php   $flag="complete";
+                            } 
+                        } 
+                        if($flag==NULL){ ?>
+                            <div>
+                                <form method="POST" action="follow.php?id=<?=$get_id?>" accept-charset="UTF-8"><input name="_method" type="hidden" value="Follow">
+                                    <input class="btn btn-primary btn-lg btn-block" type="submit" name="btn_follow" value="Follow">
+                                    <input type="hidden" name="follow_post" value="<?php print($get_id);?>"/>
+                                </form>
+                            </div>
+                <?php   } ?>
                     </div>
                 </div>
             </aside>
